@@ -1,0 +1,17 @@
+{% extends 'donutapp/base.html' %}
+
+{% block content %}
+<div class="row">
+    <form action="{% url 'words_store_multi' %}" method="POST" style="margin-bottom:2%">
+        	{% csrf_token %}
+	  <div class="col-lg-6 col-lg-offset-3">
+	    <div class="input-group">
+	      <input type="text" class="form-control" name="keywords" placeholder="키워드 입력... (콤마로 구분)">
+	      <span class="input-group-btn">
+	        <button class="btn btn-default" type="submit">생성</button>
+	      </span>
+	    </div>
+	  </div>
+    </form>
+</div>
+{% endblock %}
