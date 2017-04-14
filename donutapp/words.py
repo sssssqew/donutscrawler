@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Word
 
 import csv
@@ -54,7 +55,19 @@ def show(request, value):
 	return HttpResponse(value)
 
 def index(request):
-	words = Word.objects.all()
+	word_list = Word.objects.all()
+	paginator = Paginator(word_list, 3)
+	page = request.GET.get('page')
+
+	try:
+		words = paginator.page(page)
+	except PageNotAnInteger:
+		# If page is not an integer, deliver first page.
+		words = paginator.page(1)
+	except EmptyPage:
+		# If page is out of range (e.g. 9999), deliver last page of results.
+		words = paginator.page(paginator.num_pages)
+
 	context = {'words': words}
 	return render(request, "donutapp/index.html", context)
 
