@@ -54,7 +54,9 @@ def show(request, value):
 	return HttpResponse(value)
 
 def index(request):
-	return HttpResponse("index")
+	words = Word.objects.all()
+	context = {'words': words}
+	return render(request, "donutapp/index.html", context)
 
 def counts_word(request, value):
 	return HttpResponse("show counts for a word")

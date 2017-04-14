@@ -1,4 +1,7 @@
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import static
+
 from . import words
 from . import crawl 
 
@@ -14,3 +17,5 @@ urlpatterns = [
 	url(r'^words/(?P<value>.+)/crawl$', crawl.store_single, name='crawl_store_single'),
 	url(r'^words/(?P<value>.+)/$', words.show, name='words_show'),
 ]
+
+urlpatterns += static('/upload/', document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,37 @@
+{% extends 'donutapp/base.html' %}
+
+{% block style %}
+<style>
+	#thum-link {
+		text-decoration: none;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+<div class="col-md-6 col-md-offset-3">
+{% for word in words %}
+  <div class="col-sm-6 col-md-4">
+  <a id="thum-link" href="{% url 'words_show' value=word.value %}">
+    <div class="thumbnail">
+    {% if word.img %}
+      <img src="{{ MEDIA_URL }}{{ word.img.url }}" alt="{{ word.img.url }}" class="img-rounded" style="height:300px;
+    width:100%;">
+     {% endif %}
+      <div class="caption">
+        <h3>{{ word }}</h3>
+        <p class="description">
+        </p>	
+        <div class="clearfix">
+        	<div class="pull-left price"></div>
+        	<a href="#" class="btn btn-success	  pull-right" role="button">스크랩</a>
+        </div>
+      </div>
+    </div>
+    </a>
+  </div>
+{% endfor %}
+</div>
+</div>
+{% endblock %}
