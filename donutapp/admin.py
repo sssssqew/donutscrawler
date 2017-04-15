@@ -9,6 +9,9 @@ from .models import Word, Count
 # Register your models here.
 class WordAdmin(admin.ModelAdmin):
 	search_fields = ['value','donut', 'created_date', 'updated_date']
+
+class CountAdmin(admin.ModelAdmin):
+	ordering = ('crawled_date',)
 	
 admin.site.register(Word, WordAdmin)
-admin.site.register(Count)
+admin.site.register(Count, CountAdmin)
