@@ -9,6 +9,16 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="row">
+<div class="pull-right">
+	<form method="GET" action="." style="margin: 0" >
+	    <input  id="search_box" type="text" name="search_box"  value="{{ request.GET.search_box }}" placeholder="Search..." >
+	    <button id="search_submit" type="submit" >검색</button>
+	</form>
+</div>
+</div>
+
 <div class="row">
 <div class="col-md-6 col-md-offset-3">
 {% for word in words %}
@@ -35,9 +45,9 @@
 
 
 {% if words.has_other_pages %}
-  <ul class="pagination">
+  <ul class="pagination" style="margin-left:40%;margin-top:10%;">
     {% if words.has_previous %}
-      <li><a href="?page={{ words.previous_page_number }}">&laquo;</a></li>
+      <li><a href="?page={{ words.previous_page_number }}{% if request.GET.search_box %}&search_box={{ request.GET.search_box }}{% endif %}">&laquo;</a></li>
     {% else %}
       <li class="disabled"><span>&laquo;</span></li>
     {% endif %}
@@ -49,7 +59,7 @@
       {% endif %}
     {% endfor %}
     {% if words.has_next %}
-      <li><a href="?page={{ words.next_page_number }}">&raquo;</a></li>
+      <li><a href="?page={{ words.next_page_number }}{% if request.GET.search_box %}&search_box={{ request.GET.search_box }}{% endif %}">&raquo;</a></li>
     {% else %}
       <li class="disabled"><span>&raquo;</span></li>
     {% endif %}

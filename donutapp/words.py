@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from .models import Word
 
 import csv
@@ -56,6 +57,14 @@ def show(request, value):
 
 def index(request):
 	word_list = Word.objects.all()
+	query = request.GET.get("search_box")
+
+	if query:
+		word_list = word_list.filter(
+			Q(value__icontains=query) |
+			Q(donut__icontains=query)
+		).distinct()
+
 	paginator = Paginator(word_list, 3)
 	page = request.GET.get('page')
 
