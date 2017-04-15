@@ -9,14 +9,14 @@ from .models import Word
 
 import csv
 
-# ------------------------------------------------------------------------------------
+
 def delete_spaces(words):
 	w_list = []
 	words = words.split(',')
 	for word in words:
 		w_list.append(word.strip())
 	return w_list
-#-------------------------------------------------------------------------------------
+
 def save_model(words):
 	for word in words:
 		try:
@@ -25,7 +25,7 @@ def save_model(words):
 			word_model = Word(value=word)
 			word_model.publish()
 			word_model.save() 
-#-------------------------------------------------------------------------------------
+
 
 # Create your views here.
 def create(request):
@@ -65,7 +65,7 @@ def index(request):
 			Q(donut__icontains=query)
 		).distinct()
 
-	paginator = Paginator(word_list, 3)
+	paginator = Paginator(word_list, 6)
 	page = request.GET.get('page')
 
 	try:

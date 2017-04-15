@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+
+from . import naver 
 from datetime import datetime
 from datetime import timedelta
 
@@ -27,6 +29,10 @@ def store_single(request, value):
 	print value
 	days = createPeriod(s_date, e_date)
 	print days
+
+	for day in days:
+		counts = naver.get_counts(value, day)
+		print counts
 	return HttpResponse("crawl single")
 
 def store_multi(request):
