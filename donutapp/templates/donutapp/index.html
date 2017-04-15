@@ -30,6 +30,7 @@
 	  padding-top: 15px;
 	}
 	.navbar-nav:last-child{ border-right:0}
+
 </style>
 {% endblock %}
 
@@ -54,8 +55,8 @@
 <div class="col-md-6 col-md-offset-3">
 {% for word in words %}
   <div class="col-sm-6 col-md-4">
-  <a id="thum-link" href="{% url 'words_show' value=word.value %}">
     <div class="thumbnail">
+    <a id="thum-link" href="{% url 'words_show' value=word.value %}">
     {% if word.img %}
       <img src="{{ MEDIA_URL }}{{ word.img.url }}" alt="{{ word.img.url }}" class="img-rounded" style="height:300px;
     width:100%;">
@@ -63,17 +64,42 @@
 	  <img src="/upload/no.png" alt="default" class="img-rounded" style="height:300px;
     width:100%;">
      {% endif %}
+      </a>
       <div class="caption">
-        <h3>{{ word }}</h3>
-        <p class="description">
-        </p>	
+      <h3>{{ word }}</h3>
+      <form method="POST" action="{% url 'crawl_store_single' value=word.value %}">
+      {% csrf_token %}
+	  <div class="col-sm-6" >
+	      <div class="form-group">
+	        <div class='input-group date' id='datetimepicker9'>
+	          <input type='text' name="s_date" class="form-control" />
+	          <span class="input-group-addon">
+	            <span class="glyphicon glyphicon-calendar">
+	            </span>
+	          </span>
+	        </div>
+	      </div>
+	    </div>
+	    <div class="col-sm-6" >
+	      <div class="form-group">
+	        <div class='input-group date' id='datetimepicker9'>
+	          <input type='text' name="e_date" class="form-control" />
+	          <span class="input-group-addon">
+	            <span class="glyphicon glyphicon-calendar">
+	            </span>
+	          </span>
+	        </div>
+	      </div>
+	    </div>
+
         <div class="clearfix">
-        	<div class="pull-left price"></div>
-        	<a href="#" class="btn btn-default	  pull-right" role="button">스크랩</a>
+        	<button class="btn btn-default pull-right" >
+        	<i class="glyphicon glyphicon-save"></i> Crawl</a>
         </div>
+        </form>
       </div>
     </div>
-    </a>
+   
   </div>
 {% endfor %}
 </div>
@@ -107,4 +133,62 @@
 </div>
 </div>
 
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+	  $(function () {
+            $('#datetimepicker9').datetimepicker({
+                viewMode: 'years'
+            });
+             $(function () {
+			   var bindDatePicker = function() {
+					$(".date").datetimepicker({
+			        format:'YYYY-MM-DD',
+			        viewMode: 'years',
+						icons: {
+							time: "fa fa-clock-o",
+							date: "fa fa-calendar",
+							up: "fa fa-arrow-up",
+							down: "fa fa-arrow-down"
+						}
+					}).find('input:first').on("blur",function () {
+						// check if the date is correct. We can accept dd-mm-yyyy and yyyy-mm-dd.
+						// update the format if it's yyyy-mm-dd
+						var date = parseDate($(this).val());
+
+						if (! isValidDate(date)) {
+							//create date based on momentjs (we have that)
+							date = moment().format('YYYY-MM-DD');
+						}
+
+						$(this).val(date);
+					});
+				}
+			   
+			   var isValidDate = function(value, format) {
+					format = format || false;
+					// lets parse the date to the best of our knowledge
+					if (format) {
+						value = parseDate(value);
+					}
+
+					var timestamp = Date.parse(value);
+
+					return isNaN(timestamp) == false;
+			   }
+			   
+			   var parseDate = function(value) {
+					var m = value.match(/^(\d{1,2})(\/|-)?(\d{1,2})(\/|-)?(\d{4})$/);
+					if (m)
+						value = m[5] + '-' + ("00" + m[3]).slice(-2) + '-' + ("00" + m[1]).slice(-2);
+
+					return value;
+			   }
+			   
+			   bindDatePicker();
+			 });
+        });
+
+</script>
 {% endblock %}
