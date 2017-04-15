@@ -21,23 +21,14 @@ def createPeriod(s_date, e_date):
 	return days
 
 
-# Create your views here.
-def store_single(request, value):
-	word = Word.objects.get(value = value)
-	# print word
-
-	s_date = request.POST.get("s_date")
-	e_date = request.POST.get("e_date")
-	days = createPeriod(s_date, e_date)
-	# print days
-
+def save_counts(word, days):
 	for day in days:
 		try: 
-			count = Count.objects.get(crawled_date = day)
+			count = Count.objects.get(word_id=word.id, crawled_date = day)
 			print "crawling data exists"
 		except:
-			counts = naver.get_counts(value, day)
-			# print counts
+			counts = naver.get_counts(word.value, day)
+			print counts
 
 			count = Count(
 				word_id = word.id, 
@@ -48,6 +39,19 @@ def store_single(request, value):
 			count.publish()
 			count.save()
 
+
+# Create your views here.
+def store_single(request, value):
+	word = Word.objects.get(value = value)
+	# print word
+
+	s_date = request.POST.get("s_date")
+	e_date = request.POST.get("e_date")
+	days = createPeriod(s_date, e_date)
+	# print days
+
+	save_counts(word, days)
+
 	counts = Count.objects.all()
 	for count in counts:
 		print count.value
@@ -57,4 +61,20 @@ def store_single(request, value):
 	return HttpResponse("crawl single")
 
 def store_multi(request):
+	words = Word.objects.all()
+
+	s_date = request.POST.get("s_date")
+	e_date = request.POST.get("e_date")
+	days = createPeriod(s_date, e_date)
+	# print days
+
+	for word in words:
+		save_counts(word, days)
+
+		counts = Count.objects.filter(word_id=word.id)
+		for count in counts:
+			print count.value
+			print count.type
+			print count.crawled_date
+
 	return HttpResponse("crawl multi")

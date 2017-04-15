@@ -17,10 +17,12 @@ def delete_spaces(words):
 		w_list.append(word.strip())
 	return w_list
 
+# csv에서 같은 단어인데도 불구하고 띄워쓰기 등에 따라 중복 저장되기도 함 
 def save_model(words):
 	for word in words:
 		try:
 			word_model = Word.objects.get(value=word)
+			print word
 		except:
 			word_model = Word(value=word)
 			word_model.publish()
