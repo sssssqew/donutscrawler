@@ -3,8 +3,9 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-
+from .models import Word, Count
 from . import naver 
+
 from datetime import datetime
 from datetime import timedelta
 
@@ -22,17 +23,37 @@ def createPeriod(s_date, e_date):
 
 # Create your views here.
 def store_single(request, value):
+	word = Word.objects.get(value = value)
+	# print word
+
 	s_date = request.POST.get("s_date")
 	e_date = request.POST.get("e_date")
-	print s_date
-	print e_date
-	print value
 	days = createPeriod(s_date, e_date)
-	print days
+	# print days
 
 	for day in days:
-		counts = naver.get_counts(value, day)
-		print counts
+		try: 
+			count = Count.objects.get(crawled_date = day)
+			print "crawling data exists"
+		except:
+			counts = naver.get_counts(value, day)
+			# print counts
+
+			count = Count(
+				word_id = word.id, 
+				value = counts, 
+				type = "navernews",
+				crawled_date = day
+			)
+			count.publish()
+			count.save()
+
+	counts = Count.objects.all()
+	for count in counts:
+		print count.value
+		print count.type
+		print count.crawled_date
+
 	return HttpResponse("crawl single")
 
 def store_multi(request):
