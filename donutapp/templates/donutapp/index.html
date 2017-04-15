@@ -5,6 +5,14 @@
 	#thum-link {
 		text-decoration: none;
 	}
+	img {
+	    opacity: 0.6;
+	    filter: alpha(opacity=60); /* For IE8 and earlier */
+	}
+	img:hover {
+	    opacity: 1.0;
+	    filter: alpha(opacity=100); /* For IE8 and earlier */
+	}
 </style>
 {% endblock %}
 
