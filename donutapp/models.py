@@ -39,4 +39,5 @@ class Count(models.Model):
 		self.updated_date = timezone.now()
 
 	def __str__(self):
-		return self.value.encode('utf-8')
+		name = self.word.value + '   ' + self.crawled_date.strftime('%Y.%m.%d')
+		return name.encode('utf-8')
