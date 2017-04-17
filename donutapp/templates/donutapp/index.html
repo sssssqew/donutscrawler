@@ -116,6 +116,7 @@
       </div>
       </div>
 
+	 <!-- Crawl -->
       <form method="POST" action="{% url 'crawl_store_single' value=word.value %}">
       {% csrf_token %}
 	  <div class="col-sm-6" >
@@ -144,6 +145,14 @@
         <div class="clearfix">
         	<button class="btn btn-default pull-right" >
         	<i class="glyphicon glyphicon-save"></i> Crawl
+        </div>
+        </form>
+
+		<!-- JSON -->
+        <form method="GET" action="{% url 'words_counts_word' value=word.value %}">
+        <div class="clearfix">
+        	<button class="btn btn-default pull-right" >
+        	<i class="glyphicon glyphicon-circle-arrow-down"></i> JSON
         </div>
         </form>
       </div>

@@ -6,10 +6,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from .models import Word, Count
+from django.core import serializers
 
 import csv
 import json
-
+import collections
 
 def delete_spaces(words):
 	w_list = []
@@ -28,6 +29,13 @@ def save_model(words):
 			word_model = Word(value=word)
 			word_model.publish()
 			word_model.save() 
+
+def str_date(date):
+	date_str = False
+	if date:
+		date_str = date.strftime('%Y-%m-%d')
+	return date_str
+
 
 
 # Create your views here.
@@ -56,8 +64,8 @@ def store_multi(request):
 	return HttpResponse("store multi")
 
 def show(request, value):
-	word_model = Word.objects.get(value=value)
-	counts = Count.objects.filter(word_id=word_model.id)
+	word = Word.objects.get(value=value)
+	counts = Count.objects.filter(word_id=word.id)
 	date = []
 	data = []
 
@@ -72,7 +80,7 @@ def show(request, value):
 	data.insert(0, value)
 	columns = [date, data]
 
-	context = {'columns': json.dumps(columns), 'word':word_model}
+	context = {'columns': json.dumps(columns), 'word':word}
 	return render(request, "donutapp/show.html", context)
 
 def index(request):
@@ -101,9 +109,41 @@ def index(request):
 	return render(request, "donutapp/index.html", context)
 
 def counts_word(request, value):
-	return HttpResponse("show counts for a word")
+	word = Word.objects.get(value=value)
+	counts = Count.objects.filter(word_id=word.id)
+
+	s_date = request.GET.get("s_date")
+	e_date = request.GET.get("e_date")
+	type = request.GET.get("type")
+
+	# conditional query 
+	if s_date:
+		counts = counts.filter(crawled_date__gte=s_date).distinct()
+	if e_date:
+		counts = counts.filter(crawled_date__lte=e_date).distinct()
+	if type:
+		counts = counts.filter(type=type).distinct()
+
+	cook_json = collections.OrderedDict()
+	cook_json['word'] = word.value 
+	cook_json['donut'] = word.donut 
+	cook_json['created_date'] = str_date(word.created_date)
+	cook_json['updated_date'] = str_date(word.updated_date)
+	cook_json['history'] =  []
+	for count in counts:
+		cook_json['history'].append({
+			'value': count.value,
+			'type': count.type,
+			'crawled_date': str_date(count.crawled_date),
+			'created_date': str_date(count.created_date),
+			'updated_date': str_date(count.updated_date)
+		})
+
+	return HttpResponse(json.dumps(cook_json, indent=4))
 
 def counts_latest(request):
+	# words = Word.objects.all()
+	
 	return HttpResponse("show counts for latest data")
 
 
