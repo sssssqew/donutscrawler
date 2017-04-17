@@ -47,6 +47,10 @@ def make_json(word, counts):
 	cook_json['created_date'] = str_date(word.created_date)
 	cook_json['updated_date'] = str_date(word.updated_date)
 	cook_json['history'] =  []
+
+	# sort counts by crawled_date
+	counts = sorted(counts, key=lambda m: (m.crawled_date,))
+
 	for count in counts:
 		cook_json['history'].append({
 			'value': count.value,
