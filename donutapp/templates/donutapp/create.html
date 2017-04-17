@@ -8,7 +8,7 @@
 	    <div class="input-group">
 	      <input type="text" class="form-control" name="words" placeholder="키워드 입력... (콤마로 구분)">
 	      <span class="input-group-btn">
-	        <button class="btn btn-default" type="submit">생성</button>
+	        <button class="btn btn-default" type="submit">단어 생성</button>
 	      </span>
 	    </div>
 	  </div>
@@ -17,7 +17,7 @@
     <form action="{% url 'words_store_multi' %}" method="post" enctype="multipart/form-data"> 
 	   	{% csrf_token %}
 		<div class="col-lg-6 col-lg-offset-3">
-		   <div class="input-group" style="float:left;width:95.6%;">
+		   <div class="input-group" style="float:left;width:93.4%;">
                 <label class="input-group-btn">
                     <span class="btn btn-primary">
                         Browse… <input type="file" name="file" id="file" style="display: none;">
@@ -25,7 +25,7 @@
                 </label>
                 <input type="text" id="fname" class="form-control" readonly="">
             </div>
-		    <input class="btn btn-default" type="submit" value="생성" />
+		    <input class="btn btn-default" type="submit" value="단어 생성" />
          </div>
      </form>
 </div>

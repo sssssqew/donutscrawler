@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from .models import Word, Count
@@ -67,7 +68,7 @@ def store_single(request):
 	print words
 	save_model(words) 
 
-	return HttpResponse("store single")
+	return HttpResponseRedirect(reverse('words_index'))
 
 def store_multi(request):
 	if 'file' in request.FILES:
@@ -80,7 +81,7 @@ def store_multi(request):
 
 	save_model(words)
 
-	return HttpResponse("store multi")
+	return HttpResponseRedirect(reverse('words_index'))
 
 def show(request, value):
 	word = Word.objects.get(value=value)

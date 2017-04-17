@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
+
 from .models import Word, Count
 from . import naver 
 
@@ -58,7 +60,7 @@ def store_single(request, value):
 		print count.type
 		print count.crawled_date
 
-	return HttpResponse("crawl single")
+	return HttpResponseRedirect(reverse('words_show', args=(value,)))
 
 def store_multi(request):
 	words = Word.objects.all()
@@ -77,4 +79,4 @@ def store_multi(request):
 			print count.type
 			print count.crawled_date
 
-	return HttpResponse("crawl multi")
+	return HttpResponseRedirect(reverse('words_index'))
