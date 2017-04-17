@@ -12,6 +12,9 @@ import csv
 import json
 import collections
 
+from datetime import datetime
+from datetime import timedelta
+
 def delete_spaces(words):
 	w_list = []
 	words = words.split(',')
@@ -36,6 +39,22 @@ def str_date(date):
 		date_str = date.strftime('%Y-%m-%d')
 	return date_str
 
+def make_json(word, counts):
+	cook_json = collections.OrderedDict()
+	cook_json['word'] = word.value 
+	cook_json['donut'] = word.donut 
+	cook_json['created_date'] = str_date(word.created_date)
+	cook_json['updated_date'] = str_date(word.updated_date)
+	cook_json['history'] =  []
+	for count in counts:
+		cook_json['history'].append({
+			'value': count.value,
+			'type': count.type,
+			'crawled_date': str_date(count.crawled_date),
+			'created_date': str_date(count.created_date),
+			'updated_date': str_date(count.updated_date)
+		})
+	return cook_json
 
 
 # Create your views here.
@@ -124,27 +143,27 @@ def counts_word(request, value):
 	if type:
 		counts = counts.filter(type=type).distinct()
 
-	cook_json = collections.OrderedDict()
-	cook_json['word'] = word.value 
-	cook_json['donut'] = word.donut 
-	cook_json['created_date'] = str_date(word.created_date)
-	cook_json['updated_date'] = str_date(word.updated_date)
-	cook_json['history'] =  []
-	for count in counts:
-		cook_json['history'].append({
-			'value': count.value,
-			'type': count.type,
-			'crawled_date': str_date(count.crawled_date),
-			'created_date': str_date(count.created_date),
-			'updated_date': str_date(count.updated_date)
-		})
+	cook_json = make_json(word, counts)
 
 	return HttpResponse(json.dumps(cook_json, indent=4))
 
 def counts_latest(request):
-	# words = Word.objects.all()
-	
-	return HttpResponse("show counts for latest data")
+	words = Word.objects.all()
+	type = request.GET.get("type")
+	date = request.GET.get("date")
+	cook_json_all = []
+
+	for word in words:
+		counts = Count.objects.filter(word_id=word.id)
+		if type:
+			counts = counts.filter(type=type).distinct()
+		if date:
+			counts = counts.filter(crawled_date=datetime.strptime(date, "%Y-%m-%d")).distinct()
+
+		cook_json = make_json(word, counts)
+		cook_json_all.append(cook_json)
+
+	return HttpResponse(json.dumps(cook_json_all, indent=4))
 
 
 
