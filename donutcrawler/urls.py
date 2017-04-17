@@ -18,5 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
 	url(r'^', include('donutapp.urls')), # $ is end of url 
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls, name='admin'),
 ]

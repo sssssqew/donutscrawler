@@ -81,9 +81,12 @@
         	<i class="glyphicon glyphicon-save"></i> Crawl All
         </div>
         </form>
-
+		<a class="btn btn-default pull-right" href="/admin">
+		<i class="glyphicon glyphicon-cog"></i> Admin</a>
+		
 		<a class="btn btn-default pull-right" href="{% url 'words_create' %}">
 		<i class="glyphicon glyphicon-plus"></i> Create</a>
+
         <!-- JSON -->
         <form method="GET" action="{% url 'words_counts_latest' %}">
         <div class="clearfix">
@@ -91,6 +94,7 @@
         	<i class="glyphicon glyphicon-circle-arrow-down"></i> JSON
         </div>
         </form>
+        
 </div>
 
 </div>
