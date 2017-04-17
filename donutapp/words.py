@@ -5,9 +5,10 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from .models import Word
+from .models import Word, Count
 
 import csv
+import json
 
 
 def delete_spaces(words):
@@ -55,7 +56,24 @@ def store_multi(request):
 	return HttpResponse("store multi")
 
 def show(request, value):
-	return HttpResponse(value)
+	word_model = Word.objects.get(value=value)
+	counts = Count.objects.filter(word_id=word_model.id)
+	date = []
+	data = []
+
+	for count in counts:
+		date.append(count.crawled_date)
+		data.append(count.value)
+
+	tuples = sorted(zip(date, data))
+	date, data = [t[0].strftime('%Y-%m-%d') for t in tuples], [t[1] for t in tuples]
+ 
+	date.insert(0, 'x')
+	data.insert(0, value)
+	columns = [date, data]
+
+	context = {'columns': json.dumps(columns), 'word':word_model}
+	return render(request, "donutapp/show.html", context)
 
 def index(request):
 	word_list = Word.objects.all()
