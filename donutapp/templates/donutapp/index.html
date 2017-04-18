@@ -83,7 +83,7 @@
         </form>
 		<a class="btn btn-default pull-right" href="/admin">
 		<i class="glyphicon glyphicon-cog"></i> Admin</a>
-		
+
 		<a class="btn btn-default pull-right" href="{% url 'words_create' %}">
 		<i class="glyphicon glyphicon-plus"></i> Create</a>
 
@@ -117,9 +117,9 @@
       <div class="caption">
       <div class="row">
       <div class="col-md-10">
-      	<h3>{{ word }}</h3>
+      	<h4>{{ word }}</h4>
       </div>
-      <div class="col-md-2" style="margin-top: 5%">
+      <div class="col-md-2" style="margin-top: 2%">
       <span class="badge">
       	{% for count in  word.count_set.all %}
       	{% if forloop.last %}
