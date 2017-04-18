@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
     'donutapp'
 ]
 
@@ -122,3 +123,14 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/upload/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
+
+
+# AM 1:00 
+# CRONJOBS = [
+#     ('0 1 * * *', 'donutapp.cron.my_scheduled_job', '>> /home/leesy/dev/donut/donutcrawler/donutapp/scheduled_job.log'), 
+# ]
+
+# AM 1:00 
+CRONJOBS = [
+    ('* * * * *', 'donutapp.cron.my_scheduled_job', '>> /home/leesy/dev/donut/donutcrawler/donutapp/scheduled_job.log'), 
+]
