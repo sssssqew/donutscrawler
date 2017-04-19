@@ -86,6 +86,24 @@
 
 		<a class="btn btn-default pull-right" href="{% url 'words_create' %}">
 		<i class="glyphicon glyphicon-plus"></i> Create</a>
+		
+		<form method="GET" action="{% url 'words_rank' %}">
+		<div class="col-sm-3" >
+	      <div class="form-group">
+	        <div class='input-group date'>
+	          <input type='text' name="date" class="form-control" />
+	          <span class="input-group-addon">
+	            <span class="glyphicon glyphicon-calendar">
+	            </span>
+	          </span>
+	        </div>
+	      </div>
+	    </div>
+	    <div class="clearfix">
+        	<button class="btn btn-default" >
+        	<i class="glyphicon glyphicon-asterisk"></i> Rank
+        </div>
+		</form>
 
         <!-- JSON -->
         <form method="GET" action="{% url 'words_counts_latest' %}">

@@ -173,4 +173,37 @@ def counts_latest(request):
 	return HttpResponse(json.dumps(cook_json_all, indent=4))
 
 
+def rank(request):
+	words = Word.objects.all()
+	date = request.GET.get("date")
+	date = datetime.strptime(date, "%Y-%m-%d")
+	ranks = {}
+
+	# get donut list
+	donuts = words.values_list('donut').distinct()
+	for donut in donuts:
+		total = 0
+		# print "----------------------------------------------------"
+		# print donut[0].encode('utf-8') # str
+		donut_str = donut[0].encode('utf-8')
+		# print "----------------------------------------------------"
+		words_for_donut = words.filter(donut=donut[0])
+		for w in words_for_donut:
+			# print w.value
+			try:
+				count = Count.objects.get(word_id=w.id, crawled_date = date)
+				total += count.value
+			except:
+				total += 0
+		ranks[donut_str] = total
+
+	ranks = sorted(ranks.items(), key=lambda r: r[1], reverse=True)
+	ranks_top10 = ranks[:10]
+
+	# return HttpResponse(json.dumps(ranks_top10, indent=4)) # JSON
+	context = {'ranks':ranks_top10, 'date':date}
+	return render(request, "donutapp/ranks.html", context)
+
+
+
 

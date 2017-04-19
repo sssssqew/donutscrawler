@@ -1,0 +1,29 @@
+{% extends 'donutapp/base.html' %}
+
+{% block content %}
+<div class="row">
+<div class="col-md-4 col-md-offset-4">
+{% if ranks %}
+<h2 style="margin-top:7%;margin-bottom: 5%">Ranks Of Donuts ({{ date | date:'Y-m-d' }})</h2>
+<table class="table table-striped">
+        <thead>
+        <tr>
+	        <td><B><h3># 도넛</h3></B></td>
+            <td><B><h3># 뉴스 건수</h3></B></td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rank in ranks %}
+        <tr>
+        	<td><h4>{{ rank.0 }}</h4></td>
+            <td><h4>{{ rank.1 }}</h4></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+<h2>해당 날짜에서는 데이터가 존재하지 않아서 랭킹을 매길 수 없습니다.</h2>
+{% endif %}
+</div>
+</div>
+{% endblock %}
