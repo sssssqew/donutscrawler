@@ -54,11 +54,11 @@ def store_single(request, value):
 
 	save_counts(word, days)
 
-	counts = Count.objects.all()
-	for count in counts:
-		print count.value
-		print count.type
-		print count.crawled_date
+	# counts = Count.objects.all()
+	# for count in counts:
+	# 	print count.value
+	# 	print count.type
+	# 	print count.crawled_date
 
 	return HttpResponseRedirect(reverse('words_show', args=(value,)))
 
@@ -73,10 +73,12 @@ def store_multi(request):
 	for word in words:
 		save_counts(word, days)
 
-		counts = Count.objects.filter(word_id=word.id)
-		for count in counts:
-			print count.value
-			print count.type
-			print count.crawled_date
+		# counts = Count.objects.filter(word_id=word.id)
+		# for count in counts:
+		# 	print count.value
+		# 	print count.type
+		# 	print count.crawled_date
 
 	return HttpResponseRedirect(reverse('words_index'))
+
+

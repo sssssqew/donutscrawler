@@ -2,6 +2,8 @@
 import urllib2
 import lxml
 from bs4 import BeautifulSoup
+from background_task import background
+from datetime import datetime
 
 # URL 쿼리 설정 
 TARGET_URL_BEFORE_QUERY = 'https://search.naver.com/search.naver?where=news&se=0&query='
@@ -50,6 +52,7 @@ def getNumberOfNews(query):
 	html.close()
 	return  counts
 
+# 크롤링 메인 모듈 
 def get_counts(value, day):
 	print "searching..."
 	query = createUrlQuery(value, day)

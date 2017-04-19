@@ -24,13 +24,13 @@ def delete_spaces(words):
 	return w_list
 
 # csv에서 같은 단어인데도 불구하고 띄워쓰기 등에 따라 중복 저장되기도 함 
-def save_model(words):
-	for word in words:
+def save_model(words, donut):
+	for i, word in enumerate(words):
 		try:
 			word_model = Word.objects.get(value=word)
 			print word
 		except:
-			word_model = Word(value=word)
+			word_model = Word(value=word, donut=donut[i])
 			word_model.publish()
 			word_model.save() 
 
@@ -77,13 +77,15 @@ def store_single(request):
 def store_multi(request):
 	if 'file' in request.FILES:
 		words = []
+		donut = []
 		file = request.FILES['file']
 		csvReader = csv.reader(file)
 
 		for line in csvReader:
 			words.append(line[0].decode('euc-kr'))
+			donut.append(line[1].decode('euc-kr'))
 
-	save_model(words)
+	save_model(words, donut)
 
 	return HttpResponseRedirect(reverse('words_index'))
 
