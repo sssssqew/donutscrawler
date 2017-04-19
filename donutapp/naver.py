@@ -36,7 +36,7 @@ def getNumberOfNews(query):
 		r = urllib2.Request(query, headers=headers)
 		html = urllib2.urlopen(r)
 	except Exception as e:
-		html.close()
+		# html.close()
 		print e
 		return 0
 
