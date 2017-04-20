@@ -16,6 +16,9 @@ import collections
 from datetime import datetime
 from datetime import timedelta
 
+from django.core.files.base import ContentFile
+import os
+
 def delete_spaces(words):
 	w_list = []
 	words = words.split(',')
@@ -190,10 +193,21 @@ def rank(request):
 		# print "----------------------------------------------------"
 		# print donut[0].encode('utf-8') # str
 		donut_str = donut[0].encode('utf-8')
+		print str(donut_str)
 		# print "----------------------------------------------------"
 		words_for_donut = words.filter(donut=donut[0])
+		cnt += 1
 		for w in words_for_donut:
-			cnt += 1
+			img_path =  os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'upload')+'/' + str(cnt) + '.jpg'
+			print img_path
+			try:
+				if img_path:
+					with open(img_path) as f:
+						data = f.read()
+					w.img.save(str(cnt) + '.jpg', ContentFile(data))
+			except:
+				print "no image !!"
+			
 			# print w.value
 			try:
 				count = Count.objects.get(word_id=w.id, crawled_date = date_target)
