@@ -129,11 +129,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
 
 
 # AM 1:00 
-# CRONJOBS = [
-#     ('0 1 * * *', 'donutapp.cron.my_scheduled_job', '>> /home/leesy/dev/donut/donutcrawler/donutapp/scheduled_job.log'), 
-# ]
+CRONJOBS = [
+    ('0 1 * * *', 'donutapp.cron.my_scheduled_job', '>> /home/leesy/dev/donut/donutcrawler/donutapp/scheduled_job.log'), 
+]
 
 # AM 1:00 
-CRONJOBS = [
-    ('* * * * *', 'donutapp.cron.my_scheduled_job', '>> /home/leesy/dev/donut/donutcrawler/donutapp/scheduled_job.log'), 
-]
+# CRONJOBS = [
+#     ('* * * * *', 'donutapp.cron.my_scheduled_job', '>> /home/leesy/dev/donut/donutcrawler/donutapp/scheduled_job.log'), 
+# ]
