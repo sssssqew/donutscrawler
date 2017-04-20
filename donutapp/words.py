@@ -175,11 +175,15 @@ def counts_latest(request):
 
 def rank(request):
 	words = Word.objects.all()
+	page = request.GET.get('page')
 	date = request.GET.get("date")
-	date = datetime.strptime(date, "%Y-%m-%d")
+	date_target = datetime.strptime(date, "%Y-%m-%d")
+	scope = int(request.GET.get('scope') or 15) 
+	
 	ranks = {}
 
 	# get donut list
+	cnt = 0
 	donuts = words.values_list('donut').distinct()
 	for donut in donuts:
 		total = 0
@@ -189,19 +193,31 @@ def rank(request):
 		# print "----------------------------------------------------"
 		words_for_donut = words.filter(donut=donut[0])
 		for w in words_for_donut:
+			cnt += 1
 			# print w.value
 			try:
-				count = Count.objects.get(word_id=w.id, crawled_date = date)
+				count = Count.objects.get(word_id=w.id, crawled_date = date_target)
 				total += count.value
 			except:
 				total += 0
 		ranks[donut_str] = total
 
+	print cnt 
 	ranks = sorted(ranks.items(), key=lambda r: r[1], reverse=True)
-	ranks_top10 = ranks[:10]
+	ranks_top = ranks[:scope]
 
-	# return HttpResponse(json.dumps(ranks_top10, indent=4)) # JSON
-	context = {'ranks':ranks_top10, 'date':date}
+	paginator = Paginator(ranks_top, 15)
+	try:
+		ranks_top = paginator.page(page)
+	except PageNotAnInteger:
+		# If page is not an integer, deliver first page.
+		ranks_top = paginator.page(1)
+	except EmptyPage:
+		# If page is out of range (e.g. 9999), deliver last page of results.
+		ranks_top = paginator.page(paginator.num_pages)
+
+	# return HttpResponse(json.dumps(ranks_top, indent=4)) # JSON
+	context = {'ranks':ranks_top, 'date':date, 'scope':scope}
 	return render(request, "donutapp/ranks.html", context)
 
 
