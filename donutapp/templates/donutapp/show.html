@@ -1,8 +1,14 @@
 {% extends 'donutapp/base.html' %}
+{% load staticfiles %}
 
 {% block donutImg %}
-<img src="{{ MEDIA_URL }}{{ word.img.url }}" alt="" class="img-rounded" style="height:400px;
-    width:70%;">
+    {% if word.img %}
+      <img src="{{ MEDIA_URL }}{{ word.img.url }}" alt="{{ word.img.url }}" class="img-rounded" style="height:300px;
+    width:80%;">
+    {% else %}
+      <img src="{% static 'img/no.png' %}" alt="default" class="img-rounded" style="height:300px;
+    width:80%;">
+     {% endif %}
 {% endblock %}
 
 {% block content %}
