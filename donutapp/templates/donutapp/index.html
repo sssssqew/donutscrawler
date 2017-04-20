@@ -1,4 +1,5 @@
 {% extends 'donutapp/base.html' %}
+{% load staticfiles %}
 
 {% block style %}
 <style>
@@ -128,7 +129,7 @@
       <img src="{{ MEDIA_URL }}{{ word.img.url }}" alt="{{ word.img.url }}" class="img-rounded" style="height:300px;
     width:100%;">
     {% else %}
-	  <img src="/upload/no.png" alt="default" class="img-rounded" style="height:300px;
+	  <img src="{% static 'img/no.png' %}" alt="default" class="img-rounded" style="height:300px;
     width:100%;">
      {% endif %}
       </a>
@@ -210,7 +211,11 @@
       {% if words.number == i %}
         <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
       {% else %}
-        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% with words.number|add:"-2" as s and words.number|add:2 as e %}
+      {% if i >= s and i <= e %}
+        <li><a href="?page={{ i }}{% if request.GET.search_box %}&search_box={{ request.GET.search_box }}{% endif %}">{{ i }}</a></li>
+      {% endif %}
+      {% endwith %}
       {% endif %}
     {% endfor %}
     {% if words.has_next %}
