@@ -46,7 +46,11 @@
       {% if ranks.number == i %}
         <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
       {% else %}
+       {% with ranks.number|add:"-1" as s and ranks.number|add:1 as e %}
+      {% if i >= s and i <= e %}
         <li><a href="?page={{ i }}{% if date %}&date={{ date }}{% endif %}{% if scope %}&scope={{ scope }}{% endif %}">{{ i }}</a></li>
+      {% endif %}
+       {% endwith %}
       {% endif %}
     {% endfor %}
     {% if ranks.has_next %}
