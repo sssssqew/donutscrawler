@@ -212,16 +212,16 @@ def rank(request):
 		cnt += 1
 
 		# 도너츠 이미지 저장 
-		# for w in words_for_donut:
-		# 	img_path =  os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'upload')+'/' + str(cnt) + '.jpg'
-		# 	print img_path
-		# 	try:
-		# 		if img_path:
-		# 			with open(img_path) as f:
-		# 				data = f.read()
-		# 			w.img.save(str(cnt) + '.jpg', ContentFile(data))
-		# 	except:
-		# 		print "no image !!"
+		for w in words_for_donut:
+			# img_path =  os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'upload')+'/' + str(cnt) + '.jpg'
+			# print img_path
+			# try:
+			# 	if img_path:
+			# 		with open(img_path) as f:
+			# 			data = f.read()
+			# 		w.img.save(str(cnt) + '.jpg', ContentFile(data))
+			# except:
+			# 	print "no image !!"
 			
 			# print w.value
 			try:
