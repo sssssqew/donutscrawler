@@ -205,31 +205,32 @@ def rank(request):
 		total = 0
 		# print "----------------------------------------------------"
 		# print donut[0].encode('utf-8') # str
-		donut_str = donut[0].encode('utf-8')
-		print str(donut_str)
-		# print "----------------------------------------------------"
-		words_for_donut = words.filter(donut=donut[0])
-		cnt += 1
+		if donut[0]: 
+			donut_str = donut[0].encode('utf-8')
+			print str(donut_str)
+			# print "----------------------------------------------------"
+			words_for_donut = words.filter(donut=donut[0])
+			cnt += 1
 
-		# 도너츠 이미지 저장 
-		for w in words_for_donut:
-			# img_path =  os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'upload')+'/' + str(cnt) + '.jpg'
-			# print img_path
-			# try:
-			# 	if img_path:
-			# 		with open(img_path) as f:
-			# 			data = f.read()
-			# 		w.img.save(str(cnt) + '.jpg', ContentFile(data))
-			# except:
-			# 	print "no image !!"
-			
-			# print w.value
-			try:
-				count = Count.objects.get(word_id=w.id, crawled_date = date_target)
-				total += count.value
-			except:
-				total += 0
-		ranks[donut_str] = total
+			# 도너츠 이미지 저장 
+			for w in words_for_donut:
+				# img_path =  os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'upload')+'/' + str(cnt) + '.jpg'
+				# print img_path
+				# try:
+				# 	if img_path:
+				# 		with open(img_path) as f:
+				# 			data = f.read()
+				# 		w.img.save(str(cnt) + '.jpg', ContentFile(data))
+				# except:
+				# 	print "no image !!"
+				
+				# print w.value
+				try:
+					count = Count.objects.get(word_id=w.id, crawled_date = date_target)
+					total += count.value
+				except:
+					total += 0
+			ranks[donut_str] = total
 
 	print cnt 
 	ranks = sorted(ranks.items(), key=lambda r: r[1], reverse=True)
