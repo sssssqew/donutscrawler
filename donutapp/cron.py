@@ -7,6 +7,8 @@ from datetime import datetime
 from datetime import timedelta
 import pytz
 
+from django.core.mail import send_mail
+
 
 def my_scheduled_job():
 	tz = pytz.timezone('Asia/Seoul')
@@ -21,6 +23,24 @@ def my_scheduled_job():
 
 	words = Word.objects.all()
 
+	print days[0]
+
 	for word in words:
 		save_counts(word, days)
+	
+	counts = Count.objects.filter(crawled_date = days[0])
+	print words.count()
+	print counts.count()
+
+	failed_words_count = words.count() - counts.count()
+	print failed_words_count
+
+	send_mail('[도넛크롤러] 크롤링 결과', '금일 크롤링을 완료했습니다.' , 'sy.lee@dna.uno', ['sy.lee@dna.uno'], fail_silently=False)
+
+	# print subject
+	# print content
+
+
+
+	
 
