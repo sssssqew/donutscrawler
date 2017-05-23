@@ -128,12 +128,23 @@ MEDIA_URL = '/upload/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
 
 
+# gmail 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PASSWORD = 'rkrrlska7496ab'
+EMAIL_HOST_USER = 'sy.lee@dna.uno'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
 # AM 1:00 
 CRONJOBS = [
     ('0 1 * * *', 'donutapp.cron.my_scheduled_job', '>> /home/leesy/dev/donut/donutcrawler/donutapp/scheduled_job.log'), 
 ]
 
-# AM 1:00 
+
 # CRONJOBS = [
-#     ('* * * * *', 'donutapp.cron.my_scheduled_job', '>> /home/leesy/dev/donut/donutcrawler/donutapp/scheduled_job.log'), 
+#     ('0,30 * * * *', 'donutapp.cron.my_scheduled_job', '>> /home/leesy/dev/donut/donutcrawler/donutapp/scheduled_job.log'), 
 # ]
+
+
