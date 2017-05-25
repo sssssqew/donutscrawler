@@ -16,7 +16,7 @@ def home(request):
 		wordsInDonut = donut.word.all()
 		if wordsInDonut:
 			for wordInDonut in wordsInDonut:
-				print wordInDonut.value
+				print wordInDonut.value.encode('utf-8')
 			print "-------------------------"
 			time.sleep(0.2)
 	return render(request, "donutapp/home.html")
