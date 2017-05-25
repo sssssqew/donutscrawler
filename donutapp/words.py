@@ -161,7 +161,8 @@ def index(request):
 				Q(value__icontains=query) 
 				# | Q(donut__icontains=query)
 			).distinct()
-
+	else:
+		word_list = Word.objects.all()
 
 	paginator = Paginator(word_list, 6)
 	page = request.GET.get('page')
