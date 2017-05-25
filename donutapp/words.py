@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from .models import Word, Count
+from .models import Word, Count, Donut
 from django.core import serializers
 
 import csv
@@ -27,6 +27,7 @@ def delete_spaces(words):
 		w_list.append(word.strip())
 	return w_list
 
+# 도넛도 함께 추가하는 코드
 # csv에서 같은 단어인데도 불구하고 띄워쓰기 등에 따라 중복 저장되기도 함 
 # def save_model(words, donut):
 # 	for i, word in enumerate(words):
@@ -39,15 +40,31 @@ def delete_spaces(words):
 # 			word_model.save() 
 
 # csv에서 같은 단어인데도 불구하고 띄워쓰기 등에 따라 중복 저장되기도 함 
-def save_model(words):
+def save_model(words, donuts):
 	for i, word in enumerate(words):
+		# 워드 생성 
 		try:
 			word_model = Word.objects.get(value=word)
 			print word
 		except:
 			word_model = Word(value=word)
 			word_model.publish()
-			word_model.save() 
+			word_model.save()
+
+		# 도넛생성
+		try:
+			donut_model = Donut.objects.get(name = donuts[i])
+			print donuts[i]
+		except:
+			donut_model = Donut(name = donuts[i])
+			donut_model.publish()
+			donut_model.save()
+
+		# 도넛 - 워드 연결 
+		try:
+			donut_model.word.add(word_model)
+		except:
+			print "either word or donut model dose not exits in db"
 
 def str_date(date):
 	date_str = False
@@ -56,9 +73,16 @@ def str_date(date):
 	return date_str
 
 def make_json(word, counts):
+	donuts = word.donut_set.all()
 	cook_json = collections.OrderedDict()
-	cook_json['word'] = word.value 
-	cook_json['donut'] = word.donut 
+
+	donutlist = []
+	# 한 단어당 도넛 중복 가능성 
+	for donut in donuts:
+		donutlist.append(donut.name)
+
+	cook_json['donut'] = donutlist
+	cook_json['word'] = word.value
 	cook_json['created_date'] = str_date(word.created_date)
 	cook_json['updated_date'] = str_date(word.updated_date)
 	cook_json['history'] =  []
@@ -92,16 +116,16 @@ def store_single(request):
 def store_multi(request):
 	if 'file' in request.FILES:
 		words = []
-		# donut = []
+		donuts = []
 		file = request.FILES['file']
 		csvReader = csv.reader(file)
 
 		for line in csvReader:
-			words.append(line[0].decode('euc-kr'))
-			# donut.append(line[1].decode('euc-kr'))
+			words.append(line[2].decode('euc-kr'))
+			donuts.append(line[1].decode('euc-kr'))
 
-	# save_model(words, donut)
-	save_model(words)
+	save_model(words, donuts)
+	# save_model(words)
 
 	return HttpResponseRedirect(reverse('words_index'))
 
@@ -126,14 +150,18 @@ def show(request, value):
 	return render(request, "donutapp/show.html", context)
 
 def index(request):
-	word_list = Word.objects.all()
 	query = request.GET.get("search_box")
 
 	if query:
-		word_list = word_list.filter(
-			Q(value__icontains=query) |
-			Q(donut__icontains=query)
-		).distinct()
+		try:
+			donut = Donut.objects.get(name__icontains=query)
+			word_list = donut.word.all()
+		except:
+			word_list = Word.objects.filter(
+				Q(value__icontains=query) 
+				# | Q(donut__icontains=query)
+			).distinct()
+
 
 	paginator = Paginator(word_list, 6)
 	page = request.GET.get('page')
@@ -190,7 +218,7 @@ def counts_latest(request):
 
 
 def rank(request):
-	words = Word.objects.all()
+	# words = Word.objects.all()
 	page = request.GET.get('page')
 	date = request.GET.get("date")
 	date_target = datetime.strptime(date, "%Y-%m-%d")
@@ -200,33 +228,33 @@ def rank(request):
 
 	# get donut list
 	cnt = 0
-	donuts = words.values_list('donut').distinct()
+	donuts = Donut.objects.all()
 	for donut in donuts:
 		total = 0
 		# print "----------------------------------------------------"
 		# print donut[0].encode('utf-8') # str
-		if donut[0]: 
-			donut_str = donut[0].encode('utf-8')
+		if donut: 
+			donut_str = donut.name.encode('utf-8')
 			print str(donut_str)
 			# print "----------------------------------------------------"
-			words_for_donut = words.filter(donut=donut[0])
+			wordsInDonut = donut.word.all()
 			cnt += 1
-
-			# 도너츠 이미지 저장 
-			for w in words_for_donut:
+ 
+			for wordInDonut in wordsInDonut:
+				# 도너츠 이미지 저장
 				# img_path =  os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'upload')+'/' + str(cnt) + '.jpg'
 				# print img_path
 				# try:
 				# 	if img_path:
 				# 		with open(img_path) as f:
 				# 			data = f.read()
-				# 		w.img.save(str(cnt) + '.jpg', ContentFile(data))
+				# 		wordInDonut.img.save(str(cnt) + '.jpg', ContentFile(data))
 				# except:
 				# 	print "no image !!"
 				
-				# print w.value
+				# print wordInDonut.value
 				try:
-					count = Count.objects.get(word_id=w.id, crawled_date = date_target)
+					count = Count.objects.get(word_id=wordInDonut.id, crawled_date = date_target)
 					total += count.value
 				except:
 					total += 0
