@@ -11,7 +11,7 @@ def home(request):
 
 	for donut in donuts:
 		print "-------------------------"
-		print donut.name.encode('utf-8')
+		print donut.name.encode('utf-8') # error fixed
 		print "-------------------------"
 		wordsInDonut = donut.word.all()
 		if wordsInDonut:
